@@ -41,16 +41,28 @@ class HeadHunterAPI(AbstractAPI):
             if vac['salary'] and vac['salary']['currency']:
                 if vac['salary']['currency'] == currency.upper() and vac['salary']['from']:
                     if vac['salary']['from'] >= salary:
-                        data = {
-                            'title': vac['name'],
-                            'url': 'https://hh.ru/vacancy/' + vac['id'],
-                            'salary_currency': vac['salary']['currency'],
-                            'salary_from': vac['salary']['from'],
-                            'salary_to': vac['salary']['to'],
-                            'date': vac['published_at'],
-                            'employer': vac['employer']['name']
-                        }
-                        vacancies.append(data)
+                        if vac['salary']['to'] is not None:
+                            data = {
+                                'title': vac['name'],
+                                'url': 'https://hh.ru/vacancy/' + vac['id'],
+                                'salary_currency': vac['salary']['currency'],
+                                'salary_from': vac['salary']['from'],
+                                'salary_to': vac['salary']['to'],
+                                'date': vac['published_at'],
+                                'employer': vac['employer']['name']
+                            }
+                            vacancies.append(data)
+                        else:
+                            data = {
+                                'title': vac['name'],
+                                'url': 'https://hh.ru/vacancy/' + vac['id'],
+                                'salary_currency': vac['salary']['currency'],
+                                'salary_from': vac['salary']['from'],
+                                'salary_to': 'Не указано',
+                                'date': vac['published_at'],
+                                'employer': vac['employer']['name']
+                            }
+                            vacancies.append(data)
         return vacancies
 
 
@@ -69,14 +81,26 @@ class SuperJobAPI(AbstractAPI):
         vacancies = []
         for vac in self.get_response():
             if vac['payment_from'] >= salary and vac['currency'] == currency.lower():
-                data = {
-                    'title': vac['profession'],
-                    'url': vac['link'],
-                    'salary_currency': vac['currency'],
-                    'salary_from': vac['payment_from'],
-                    'salary_to': vac['payment_to'],
-                    'date': vac['date_published'],
-                    'employer': vac['firm_name']
-                }
-                vacancies.append(data)
+                if vac['payment_to'] != 0:
+                    data = {
+                        'title': vac['profession'],
+                        'url': vac['link'],
+                        'salary_currency': vac['currency'],
+                        'salary_from': vac['payment_from'],
+                        'salary_to': vac['payment_to'],
+                        'date': vac['date_published'],
+                        'employer': vac['firm_name']
+                    }
+                    vacancies.append(data)
+                else:
+                    data = {
+                        'title': vac['profession'],
+                        'url': vac['link'],
+                        'salary_currency': vac['currency'],
+                        'salary_from': vac['payment_from'],
+                        'salary_to': 'Не указано',
+                        'date': vac['date_published'],
+                        'employer': vac['firm_name']
+                    }
+                    vacancies.append(data)
         return vacancies
