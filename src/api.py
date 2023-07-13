@@ -68,11 +68,11 @@ class SuperJobAPI(AbstractAPI):
     def get_vacancies(self, currency: str, salary: int):
         vacancies = []
         for vac in self.get_response():
-            if vac['payment_from'] >= salary:
+            if vac['payment_from'] >= salary and vac['currency'] == currency.lower():
                 data = {
                     'title': vac['profession'],
                     'url': vac['link'],
-                    'salary_currency': vac['currency'].upper(),
+                    'salary_currency': vac['currency'],
                     'salary_from': vac['payment_from'],
                     'salary_to': vac['payment_to'],
                     'date': vac['date_published'],
