@@ -43,7 +43,7 @@ def main():
         if choice == 1:
             None
         elif choice == 2:
-            occupation = input('Какую занятость вы НЕ хотите иметь\n\n'
+            occupation = input('Какую занятость вы хотите иметь\n\n'
                                'Полная занятость\n'
                                'Частичная занятость\n'
                                'Стажировка\n'
@@ -55,8 +55,6 @@ def main():
                 None
             else:
                 vf.delete_from_file(occupation)
-                vf.get_from_file(currency, salary)
-                vac_lst = vf.vacancies
 
         sort = int(input('Отсортировать список вакансий?\n'
                          '1 - Вывести по умолчанию\n'
@@ -67,7 +65,7 @@ def main():
         if sort == 1:
             for vac in vac_lst:
                 data = Vacancy(vac['platform'], vac['title'], vac['url'], vac['salary_from'],
-                               vac['salary_to'], vac['date'], vac['employer'])
+                               vac['salary_to'], vac['date'], vac['employer'], vac['occupation'])
                 fin_vac_lst.append(data)
 
         elif sort == 2:
@@ -75,7 +73,7 @@ def main():
             vac_lst = vf.vacancies
             for vac in vac_lst:
                 data = Vacancy(vac['platform'], vac['title'], vac['url'], vac['salary_from'],
-                               vac['salary_to'], vac['date'], vac['employer'])
+                               vac['salary_to'], vac['date'], vac['employer'], vac['occupation'])
                 fin_vac_lst.append(data)
 
         elif sort == 3:
@@ -83,7 +81,7 @@ def main():
             vac_lst = vf.vacancies
             for vac in vac_lst:
                 data = Vacancy(vac['platform'], vac['title'], vac['url'], vac['salary_from'],
-                               vac['salary_to'], vac['date'], vac['employer'])
+                               vac['salary_to'], vac['date'], vac['employer'], vac['occupation'])
                 fin_vac_lst.append(data)
 
         if vac_lst:

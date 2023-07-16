@@ -6,7 +6,7 @@ import datetime
 
 class Vacancy:
     """Класс для инициализации вакансий"""
-    def __init__(self, platform, title, url, salary_from, salary_to, date, employer):
+    def __init__(self, platform, title, url, salary_from, salary_to, date, employer, occupation):
         self.platform = platform
         self.title = title
         self.url = url
@@ -14,13 +14,15 @@ class Vacancy:
         self.salary_to = salary_to
         self.date = date
         self.employer = employer
+        self.occupation = occupation
 
     def __str__(self):
         return f"Сайт: {self.platform}\n" \
                f"Вакансия: {self.title}\n" \
-               f"Зарплата: от {self.salary_from} до {self.salary_to},\n" \
-               f"Работодатель: {self.employer},\n" \
-               f"Дата публикации: {self.date},\n" \
+               f"Зарплата: от {self.salary_from} до {self.salary_to}\n" \
+               f"Занятость: {self.occupation}\n" \
+               f"Работодатель: {self.employer}\n" \
+               f"Дата публикации: {self.date}\n" \
                f"Ссылка: {self.url}\n"
 
     def __eq__(self, other):
@@ -93,6 +95,7 @@ class VacancyFile(AbstractVacancyFile):
                                 'url': vac['link'],
                                 'salary_from': salary_from,
                                 'salary_to': salary_to,
+                                'occupation': vac['place_of_work']['title'],
                                 'date': date,
                                 'employer': vac['firm_name']
                             }
@@ -122,6 +125,7 @@ class VacancyFile(AbstractVacancyFile):
                                         'url': 'https://hh.ru/vacancy/' + vac['id'],
                                         'salary_from': salary_from,
                                         'salary_to': salary_to,
+                                        'occupation': vac['employment']['name'],
                                         'date': date,
                                         'employer': vac['employer']['name']
                                             }
@@ -134,23 +138,10 @@ class VacancyFile(AbstractVacancyFile):
         :param keyword: занятость
         :return: None
         """
-        with open(f'sj_{self.file_name}', 'r', encoding='utf-8') as file:
-            data = json.load(file)
-            for i in reversed(range(len(data))):
-                if keyword.title() in data[i]['place_of_work']['title']:
-                    del data[i]
-
-            with open(f'sj_{self.file_name}', 'w', encoding='utf-8') as f:
-                json.dump(data, f, ensure_ascii=False, indent=4)
-
-        with open(f'hh_{self.file_name}', 'r', encoding='utf-8') as file:
-            data = json.load(file)
-            for i in reversed(range(len(data))):
-                if keyword.title() in data[i]['employment']['name']:
-                    del data[i]
-
-            with open(f'hh_{self.file_name}', 'w', encoding='utf-8') as f:
-                json.dump(data, f, ensure_ascii=False, indent=4)
+        for i in reversed(range(len(self.vacancies))):
+            if self.vacancies[i]['occupation'] != keyword:
+                del self.vacancies[i]
+        return self.vacancies
 
     def sort_by_salary(self):
         """Сортирует список vacancies по зарплате (от большего к меньшему)"""
