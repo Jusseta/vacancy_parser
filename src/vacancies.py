@@ -73,6 +73,32 @@ class VacancyFile(AbstractVacancyFile):
         :param salary: минимальная зарплата
         :return: None
         """
+        with open(f'sj_{self.file_name}', 'r', encoding='utf-8') as file:
+            sj_data = json.load(file)
+
+            if sj_data:
+                for vac in sj_data:
+                    if vac['payment_from'] >= salary:
+                        salary_from = vac['payment_from']
+                        salary_to = vac['payment_to'] if vac['payment_to'] != 0 else 'Не указано'
+
+                        if vac['currency'] == currency.lower():
+                            date_raw = vac['date_published']
+                            date_published = datetime.datetime.fromtimestamp(date_raw)
+                            date = date_published.strftime('%d.%m.%Y')
+
+                            data = {
+                                'platform': 'SuperJob',
+                                'title': vac['profession'],
+                                'url': vac['link'],
+                                'salary_from': salary_from,
+                                'salary_to': salary_to,
+                                'date': date,
+                                'employer': vac['firm_name']
+                            }
+
+                            self.vacancies.append(data)
+
         with open(f'hh_{self.file_name}', 'r', encoding='utf-8') as file:
             hh_data = json.load(file)
 
@@ -102,32 +128,6 @@ class VacancyFile(AbstractVacancyFile):
 
                                     self.vacancies.append(data)
 
-        with open(f'sj_{self.file_name}', 'r', encoding='utf-8') as file:
-            sj_data = json.load(file)
-
-            if sj_data:
-                for vac in sj_data:
-                    if vac['payment_from'] >= salary:
-                        salary_from = vac['payment_from']
-                        salary_to = vac['payment_to'] if vac['payment_to'] != 0 else 'Не указано'
-
-                        if vac['currency'] == currency.lower():
-                            date_raw = vac['date_published']
-                            date_published = datetime.datetime.fromtimestamp(date_raw)
-                            date = date_published.strftime('%d.%m.%Y')
-
-                            data = {
-                                'platform': 'SuperJob',
-                                'title': vac['profession'],
-                                'url': vac['link'],
-                                'salary_from': salary_from,
-                                'salary_to': salary_to,
-                                'date': date,
-                                'employer': vac['firm_name']
-                                    }
-
-                            self.vacancies.append(data)
-
     def delete_from_file(self, keyword):
         """
         Удаляет из json файла неподходящие по занятости вакансии
@@ -137,7 +137,7 @@ class VacancyFile(AbstractVacancyFile):
         with open(f'sj_{self.file_name}', 'r', encoding='utf-8') as file:
             data = json.load(file)
             for i in reversed(range(len(data))):
-                if keyword.casefold() in data[i]['place_of_work']['title']:
+                if keyword.title() not in data[i]['place_of_work']['title']:
                     del data[i]
 
             with open(f'sj_{self.file_name}', 'w', encoding='utf-8') as f:
@@ -146,7 +146,7 @@ class VacancyFile(AbstractVacancyFile):
         with open(f'hh_{self.file_name}', 'r', encoding='utf-8') as file:
             data = json.load(file)
             for i in reversed(range(len(data))):
-                if keyword.casefold() in data[i]['employment']['name']:
+                if keyword.title() in data[i]['employment']['name']:
                     del data[i]
 
             with open(f'hh_{self.file_name}', 'w', encoding='utf-8') as f:
