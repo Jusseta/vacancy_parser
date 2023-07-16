@@ -137,7 +137,7 @@ class VacancyFile(AbstractVacancyFile):
         with open(f'sj_{self.file_name}', 'r', encoding='utf-8') as file:
             data = json.load(file)
             for i in reversed(range(len(data))):
-                if keyword.title() not in data[i]['place_of_work']['title']:
+                if keyword.title() in data[i]['place_of_work']['title']:
                     del data[i]
 
             with open(f'sj_{self.file_name}', 'w', encoding='utf-8') as f:
