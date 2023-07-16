@@ -143,6 +143,14 @@ class VacancyFile(AbstractVacancyFile):
                 del self.vacancies[i]
         return self.vacancies
 
+    def structure_data(self):
+        fin_vac_lst = []
+        for vac in self.vacancies:
+            data = Vacancy(vac['platform'], vac['title'], vac['url'], vac['salary_from'],
+                           vac['salary_to'], vac['date'], vac['employer'], vac['occupation'])
+            fin_vac_lst.append(data)
+        return fin_vac_lst
+
     def sort_by_salary(self):
         """Сортирует список vacancies по зарплате (от большего к меньшему)"""
         vacancies = self.vacancies.sort(key=lambda k: k['salary_from'], reverse=True)

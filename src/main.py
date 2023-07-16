@@ -61,28 +61,16 @@ def main():
                          '2 - Отсортировать по зарплате (от большего к меньшему)\n'
                          '3 - Отсортировать по дате публикации (от нового к старому)\n'))
 
-        fin_vac_lst = []
         if sort == 1:
-            for vac in vac_lst:
-                data = Vacancy(vac['platform'], vac['title'], vac['url'], vac['salary_from'],
-                               vac['salary_to'], vac['date'], vac['employer'], vac['occupation'])
-                fin_vac_lst.append(data)
+            fin_vac_lst = vf.structure_data()
 
         elif sort == 2:
             vf.sort_by_salary()
-            vac_lst = vf.vacancies
-            for vac in vac_lst:
-                data = Vacancy(vac['platform'], vac['title'], vac['url'], vac['salary_from'],
-                               vac['salary_to'], vac['date'], vac['employer'], vac['occupation'])
-                fin_vac_lst.append(data)
+            fin_vac_lst = vf.structure_data()
 
         elif sort == 3:
             vf.sort_by_date()
-            vac_lst = vf.vacancies
-            for vac in vac_lst:
-                data = Vacancy(vac['platform'], vac['title'], vac['url'], vac['salary_from'],
-                               vac['salary_to'], vac['date'], vac['employer'], vac['occupation'])
-                fin_vac_lst.append(data)
+            fin_vac_lst = vf.structure_data()
 
         if vac_lst:
             print(f'По вашему запросу найдено {len(fin_vac_lst)} вакансий')
