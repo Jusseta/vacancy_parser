@@ -75,7 +75,6 @@ class VacancyFile(AbstractVacancyFile):
         '''
         with open(f'hh_{self.file_name}', 'r', encoding='utf-8') as file:
             hh_data = json.load(file)
-            hh_vacancies = []
 
             if currency == 'rub':
                 currency = 'rur'
@@ -100,11 +99,10 @@ class VacancyFile(AbstractVacancyFile):
                                     'employer': vac['employer']['name']
                                         }
 
-                                hh_vacancies.append(data)
+                                self.vacancies.append(data)
 
         with open(f'sj_{self.file_name}', 'r', encoding='utf-8') as file:
             sj_data = json.load(file)
-            sj_vacancies = []
 
             for vac in sj_data:
                 if vac['payment_from'] >= salary:
@@ -112,10 +110,9 @@ class VacancyFile(AbstractVacancyFile):
                     salary_to = vac['payment_to'] if vac['payment_to'] != 0 else 'Не указано'
 
                     if vac['currency'] == currency.lower():
-
                         date_raw = vac['date_published']
                         date_published = datetime.datetime.fromtimestamp(date_raw)
-                        date = date_published.strftime('%Y-%m-%d %H:%M:%S')
+                        date = date_published.strftime('%d.%m.%Y')
 
                         data = {
                             'platform': 'SuperJob',
@@ -127,9 +124,7 @@ class VacancyFile(AbstractVacancyFile):
                             'employer': vac['firm_name']
                                 }
 
-                        sj_vacancies.append(data)
-
-        self.vacancies = hh_vacancies + sj_vacancies
+                        self.vacancies.append(data)
 
     def delete_from_file(self, keyword):
         '''
