@@ -118,8 +118,6 @@ class VacancyFile(AbstractVacancyFile):
 
         self.vacancies = hh_vacancies + sj_vacancies
 
-        return self.vacancies
-
     def delete_from_file(self, keyword):
         with open(f'sj_{self.file_name}', 'r', encoding='utf-8') as file:
             data = json.load(file)
@@ -133,16 +131,16 @@ class VacancyFile(AbstractVacancyFile):
         with open(f'hh_{self.file_name}', 'r', encoding='utf-8') as file:
             data = json.load(file)
             for i in reversed(range(len(data))):
-                if keyword in data[i]['employment']['name']:
+                if keyword.casefold() in data[i]['employment']['name']:
                     del data[i]
 
             with open(f'hh_{self.file_name}', 'w', encoding='utf-8') as f:
                 json.dump(data, f, ensure_ascii=False, indent=4)
 
     def sort_by_salary(self):
-        vacancies = sorted(self.vacancies, key=lambda k: k.salary_from if k.salary_from else 0)
+        vacancies = self.vacancies.sort(key=lambda k: k['salary_from'], reverse=True)
         return vacancies
 
     def sort_by_date(self):
-        vacancies = sorted(self.vacancies, key=lambda k: k.date if k.date else 0)
+        vacancies = self.vacancies.sort(key=lambda k: k['date'], reverse=True)
         return vacancies
