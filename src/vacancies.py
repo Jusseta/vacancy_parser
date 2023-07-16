@@ -5,6 +5,7 @@ import datetime
 
 
 class Vacancy:
+    '''Класс для инициализации вакансий'''
     def __init__(self, platform, title, url, salary_from, salary_to, date, employer):
         self.platform = platform
         self.title = title
@@ -48,18 +49,30 @@ class AbstractVacancyFile(ABC):
 
 
 class VacancyFile(AbstractVacancyFile):
+    '''Класс для добавления вакансий в json файл и работы с ним'''
     def __init__(self):
         self.file_name = 'vacancies.json'
         self.vacancies = []
 
     def add_to_file(self, hh_vacancies: list, sj_vacancies: list):
+        '''
+        Добавляет вакансии в json файл
+        :param hh_vacancies: список вакансий с HH
+        :param sj_vacancies: список вакансий с SJ
+        :return: None
+        '''
         with open(f'hh_{self.file_name}', 'w', encoding='utf-8') as file:
             json.dump(hh_vacancies, file, ensure_ascii=False, indent=4)
         with open(f'sj_{self.file_name}', 'w', encoding='utf-8') as file:
             json.dump(sj_vacancies, file, ensure_ascii=False, indent=4)
 
     def get_from_file(self, currency: str, salary: int):
-
+        '''
+        Читает json файл и обавляет в список vacancies подходящие словари
+        :param currency: валюта
+        :param salary: минимальная зарплата
+        :return: None
+        '''
         with open(f'hh_{self.file_name}', 'r', encoding='utf-8') as file:
             hh_data = json.load(file)
             hh_vacancies = []
@@ -119,6 +132,11 @@ class VacancyFile(AbstractVacancyFile):
         self.vacancies = hh_vacancies + sj_vacancies
 
     def delete_from_file(self, keyword):
+        '''
+        Удаляет из json файла неподходящие по занятости вакансии
+        :param keyword: занятость
+        :return: None
+        '''
         with open(f'sj_{self.file_name}', 'r', encoding='utf-8') as file:
             data = json.load(file)
             for i in reversed(range(len(data))):
@@ -138,9 +156,11 @@ class VacancyFile(AbstractVacancyFile):
                 json.dump(data, f, ensure_ascii=False, indent=4)
 
     def sort_by_salary(self):
+        '''Сортирует список vacancies по зарплате (от большего к меньшему)'''
         vacancies = self.vacancies.sort(key=lambda k: k['salary_from'], reverse=True)
         return vacancies
 
     def sort_by_date(self):
+        '''Сортирует список vacancies по дате (от новых к старым)'''
         vacancies = self.vacancies.sort(key=lambda k: k['date'], reverse=True)
         return vacancies
