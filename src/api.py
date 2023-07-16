@@ -18,6 +18,7 @@ class AbstractAPI(ABC):
 
 
 class HeadHunterAPI(AbstractAPI):
+    '''Формирование запроса на HeadHunter'''
     def __init__(self, keyword: str):
         self.header = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
@@ -34,6 +35,7 @@ class HeadHunterAPI(AbstractAPI):
 
 
 class SuperJobAPI(AbstractAPI):
+    '''Формирование запроса на SuperJob'''
     def __init__(self, keyword: str):
         self.header = {'X-Api-App-Id': os.getenv('SuperJob_API_Key')}
         self.params = {'keyword': keyword, 'per_page': 100}
